@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Complaint Resolution Dashboard</title>
+  <style>
+    :root {
+      --bg-1: #0a3d76;
+      --bg-2: #0a2e52;
+      --sidebar: #0d2d49;
+      --sidebar-2: #0d2944;
+      --surface: #f3f5f7;
+      --white: #ffffff;
+      --text: #1f2a36;
+      --muted: #5f6f82;
+      --primary: #2a74e2;
+      --primary-2: #2f5fe0;
+      --gold: #f5b63d;
+      --success: #41d09d;
+      --shadow: 0 16px 34px rgba(11, 33, 58, 0.12);
+      --radius: 18px;
+      --radius-sm: 12px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, var(--bg-1), var(--bg-2));
+      color: var(--text);
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .app {
+      width: min(1360px, 100%);
+      min-height: 100vh;
+      background: var(--surface);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.06);
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: 92px;
+      background: #f2f2f2;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 22px 12px;
+    }
+
+    .browser-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .home-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.035);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 22px;
+      color: #202427;
+      flex-shrink: 0;
+    }
+
+    .urlbar {
+      flex: 1;
+      min-width: 0;
+      height: 54px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.8);
+      border: 1px solid rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 18px;
+      font-size: 21px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #1f2734;
+    }
+
+    .urlbar .dot {
+      font-size: 24px;
+      opacity: 0.7;
+    }
+
+    .browser-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: 18px;
+    }
+
+    .mini-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1d2228;
+      font-size: 18px;
+    }
+
+    .menu-dots {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .menu-dots span {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #1b1d20;
+      display: block;
+    }
+
+    .main {
+      display: flex;
+      min-height: calc(100vh - 92px);
+      background: linear-gradient(180deg, var(--bg-1), var(--bg-2));
+    }
+
+    .sidebar {
+      width: 38%;
+      min-width: 360px;
+      background: linear-gradient(180deg, var(--sidebar), var(--sidebar-2));
+      padding: 22px 18px 18px;
+      color: #fff;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 12px;
+      margin: 4px 8px 18px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .brand .spark {
+      font-size: 30px;
+      transform: rotate(-12deg);
+      color: #ffffff;
+    }
+
+    .brand strong {
+      font-size: 22px;
+      line-height: 1.15;
+      font-weight: 900;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 58px;
+      border-radius: 16px;
+      padding: 0 18px 0 16px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      font-weight: 700;
+      font-size: 18px;
+      color: #f5f7fa;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .menu-item:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .menu-item.active {
+      background: linear-gradient(90deg, #2d7fe8, #2d75d8);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .menu-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .caret {
+      font-size: 28px;
+      opacity: 0.85;
+    }
+
+    .subbox {
+      margin: 14px 0 12px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 16px 14px;
+    }
+
+    .subbox .title {
+      background: #f1f3f5;
+      color: #101a25;
+      border-radius: 15px;
+      padding: 15px 14px;
+      text-transform: uppercase;
+      font-weight: 900;
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    .mini-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .mini-bars span {
+      display: block;
+      height: 20px;
+      border-radius: 14px;
+      background: linear-gradient(90deg, #42e9d5, #3ccfa3);
+      width: 78%;
+      box-shadow: 0 8px 18px rgba(66, 233, 213, 0.12);
+    }
+
+    .mini-bars span:nth-child(2) { width: 68%; }
+    .mini-bars span:nth-child(3) { width: 58%; }
+
+    .content {
+      flex: 1;
+      background: var(--surface);
+      padding: 28px 32px 30px;
+    }
+
+    .content h1 {
+      margin: 0 0 24px;
+      font-size: clamp(2.5rem, 3vw, 3.6rem);
+      line-height: 1.05;
+      letter-spacing: -1px;
+      font-weight: 900;
+      color: #1a2230;
+    }
+
+    .stats {
+      display: flex;
+      gap: 18px;
+      margin-bottom: 26px;
+      align-items: stretch;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      border-radius: var(--radius);
+      min-height: 180px;
+      box-shadow: var(--shadow);
+      padding: 20px 22px;
+      overflow: hidden;
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 36px rgba(11, 33, 58, 0.15);
+    }
+
+    .card.primary {
+      flex: 1;
+      min-width: 260px;
+      background: linear-gradient(135deg, #3d6df0, #4f50de);
+      color: #fff;
+    }
+
+    .card.secondary {
+      width: 180px;
+      min-width: 160px;
+      background: linear-gradient(135deg, #f5b63b, #f2a22d);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+
+    .card-value {
+      font-size: 72px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -2px;
+      margin-top: 10px;
+    }
+
+    .status-panel {
+      background: rgba(255,255,255,0.75);
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: var(--radius);
+      padding: 18px 20px 12px;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.02);
+    }
+
+    .status-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--text);
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .status-row:last-child {
+      border-bottom: none;
+    }
+
+    .status-row .label {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .status-row .value {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .chart-box {
+      margin-top: 26px;
+      background: rgba(255,255,255,0.3);
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: var(--radius);
+      min-height: 180px;
+      padding: 18px 14px 12px;
+    }
+
+    .chart-box h3 {
+      margin: 0 0 16px;
+      font-size: 32px;
+      letter-spacing: -0.5px;
+      font-weight: 800;
+      color: #1e2632;
+    }
+
+    .chart {
+      display: flex;
+      align-items: flex-end;
+      height: 120px;
+      gap: 12px;
+      padding: 0 10px;
+    }
+
+    .chart-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      height: 100%;
+    }
+
+    .bar {
+      width: 100%;
+      max-width: 22px;
+      border-radius: 10px 10px 0 0;
+      background: linear-gradient(180deg, #5a7efb, #724df6);
+      animation: rise 0.8s ease-out both;
+    }
+
+    .chart-col:nth-child(2) .bar {
+      background: linear-gradient(180deg, #2ec4ff, #2a90f7);
+      animation-delay: 0.08s;
+    }
+
+    .chart-col:nth-child(3) .bar {
+      background: linear-gradient(180deg, #4ad7af, #1bb783);
+      animation-delay: 0.15s;
+    }
+
+    .chart-col:nth-child(4) .bar {
+      background: linear-gradient(180deg, #ffcd63, #f7a52d);
+      animation-delay: 0.22s;
+    }
+
+    .chart-col:nth-child(5) .bar {
+      background: linear-gradient(180deg, #ff7ca5, #ef5b7f);
+      animation-delay: 0.28s;
+    }
+
+    .chart-col:nth-child(6) .bar {
+      background: linear-gradient(180deg, #a0b3ff, #6a8cf6);
+      animation-delay: 0.35s;
+    }
+
+    .lbl {
+      font-size: 12px;
+      color: #4c5b6f;
+      font-weight: 700;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        height: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .main {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        min-width: 100%;
+      }
+
+      .card.secondary {
+        width: 100%;
+        min-width: 100%;
+      }
+
+      .content {
+        padding: 22px 18px 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="browser-left">
+        <div class="home-btn">⌂</div>
+        <div class="urlbar">
+          <span class="dot">◌</span>
+          <span>solution-portal.pages.dev</span>
+        </div>
+      </div>
+
+      <div class="browser-actions">
+        <div class="mini-box">◫</div>
+        <div class="menu-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="main">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="spark">⚡</div>
+          <strong>Complaint<br>Received</strong>
+        </div>
+
+        <div class="menu">
+          <div class="menu-item active">
+            <div class="menu-left">
+              <span>1.</span>
+              <span>Dashboard</span>
+            </div>
+          </div>
+
+          <div class="menu-item">
+            <div class="menu-left">
+              <span>2.</span>
+              <span>User Management</span>
+            </div>
+            <span class="caret">⌄</span>
+          </div>
+
+          <div class="menu-item">
+            <div class="menu-left">
+              <span>3.</span>
+              <span>Email Sources</span>
+            </div>
+            <span class="caret">⌄</span>
+          </div>
+
+          <div class="subbox">
+            <div class="title">Complaint Received</div>
+            <div class="mini-bars">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+
+          <div class="menu-item">
+            <div class="menu-left">
+              <span>4.</span>
+              <span>Create Repository</span>
+            </div>
+            <span class="caret">⌄</span>
+          </div>
+
+          <div class="menu-item">
+            <div class="menu-left">
+              <span>5.</span>
+              <span>Cases / Complaints</span>
+            </div>
+            <span class="caret">⌄</span>
+          </div>
+
+          <div class="menu-item">
+            <div class="menu-left">
+              <span>6.</span>
+              <span>Reports</span>
+            </div>
+            <span class="caret">⌄</span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="content">
+        <h1>Dashboard</h1>
+
+        <div class="stats">
+          <div class="card primary">
+            <div class="card-title">Total<br>Complaints</div>
+            <div class="card-value">0</div>
+          </div>
+
+          <div class="card secondary">
+            <div class="card-title" style="font-size: 18px;">New</div>
+            <div class="card-value" style="font-size: 58px;">0</div>
+          </div>
+        </div>
+
+        <div class="status-panel">
+          <div class="status-list">
+            <div class="status-row">
+              <span class="label">Complaint / Refund Status</span>
+            </div>
+
+            <div class="status-row">
+              <span class="label">New:</span>
+              <span class="value">0</span>
+            </div>
+
+            <div class="status-row">
+              <span class="label">Pending:</span>
+              <span class="value">0</span>
+            </div>
+
+            <div class="status-row">
+              <span class="label">Under Process:</span>
+              <span class="value">0</span>
+            </div>
+
+            <div class="status-row">
+              <span class="label">Resolved:</span>
+              <span class="value">0</span>
+            </div>
+
+            <div class="status-row">
+              <span class="label">Rejected / Not Relevant:</span>
+              <span class="value">0</span>
+            </div>
+
+            <div class="status-row">
+              <span class="label">Review Required:</span>
+              <span class="value">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <h3>Date-wise Chart</h3>
+          <div class="chart">
+            <div class="chart-col">
+              <div class="bar" style="height:40%;"></div>
+              <div class="lbl">Jan</div>
+            </div>
+            <div class="chart-col">
+              <div class="bar" style="height:58%;"></div>
+              <div class="lbl">Feb</div>
+            </div>
+            <div class="chart-col">
+              <div class="bar" style="height:46%;"></div>
+              <div class="lbl">Mar</div>
+            </div>
+            <div class="chart-col">
+              <div class="bar" style="height:72%;"></div>
+              <div class="lbl">Apr</div>
+            </div>
+            <div class="chart-col">
+              <div class="bar" style="height:82%;"></div>
+              <div class="lbl">May</div>
+            </div>
+            <div class="chart-col">
+              <div class="bar" style="height:50%;"></div>
+              <div class="lbl">Jun</div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
