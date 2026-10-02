@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Complaint Portal Dashboard</title>
+  <title>Complaint Resolution Portal</title>
   <style>
     :root{
       --bg-dark:#0b3b71;
@@ -11,299 +11,398 @@
       --sidebar:#0b2a43;
       --sidebar-2:#0b2540;
       --surface:#f2f3f6;
-      --panel:#ffffff;
       --text:#1d2430;
-      --muted:#5d687b;
-      --blue:#2d7ce8;
-      --blue2:#4c5bd8;
+      --white:#ffffff;
+      --blue:#2d7fe8;
       --orange:#f4b12c;
       --teal:#4fe1d1;
-      --chip:#eaecef;
-      --shadow:0 16px 28px rgba(9, 25, 41, 0.12);
+      --shadow:0 14px 30px rgba(9,25,41,0.12);
       --radius:18px;
     }
 
-    *{box-sizing:border-box}
-    html,body{
-      margin:0;
-      min-height:100%;
-      background:linear-gradient(180deg, var(--bg-dark), var(--bg-dark-2));
-      font-family:"Segoe UI", Tahoma, sans-serif;
-      color:var(--text);
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(180deg, var(--bg-dark), var(--bg-dark-2));
+      color: var(--text);
     }
 
-    body{
-      display:flex;
-      justify-content:center;
-      align-items:flex-start;
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
     }
 
-    .app{
-      width:min(100%, 450px);
-      min-height:100vh;
-      background:var(--surface);
-      box-shadow:0 0 0 1px rgba(0,0,0,0.08);
-      overflow:hidden;
+    .app {
+      width: min(100%, 450px);
+      min-height: 100vh;
+      background: var(--surface);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
+      overflow: hidden;
     }
 
-    .topbar{
-      height:82px;
-      background:#f1f1f1;
-      border-bottom:1px solid rgba(0,0,0,0.08);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:14px 18px 10px 14px;
+    .topbar {
+      height: 82px;
+      background: #f1f1f1;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px 10px 14px;
     }
 
-    .browser-left{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      flex:1;
-      min-width:0;
+    .browser-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+      min-width: 0;
     }
 
-    .home{
-      width:34px;height:34px;
-      display:flex;align-items:center;justify-content:center;
-      background:rgba(0,0,0,0.03);
-      border-radius:10px;
-      font-size:20px;
-      color:#202325;
+    .home {
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.03);
+      border-radius: 10px;
+      font-size: 20px;
+      color: #202325;
     }
 
-    .urlbox{
-      flex:1; min-width:0;
-      height:46px;
-      border-radius:999px;
-      background:rgba(255,255,255,0.8);
-      border:1px solid rgba(0,0,0,0.08);
-      display:flex;align-items:center;gap:10px;
-      padding:0 14px;
-      font-size:22px;
-      font-weight:600;
-      color:#1d2430;
-      overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+    .urlbox {
+      flex: 1;
+      min-width: 0;
+      height: 46px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 14px;
+      font-size: 22px;
+      font-weight: 600;
+      color: #1d2430;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
-    .urlbox .dot{ font-size:24px; opacity:0.7; }
+    .urlbox .dot { font-size: 24px; opacity: 0.7; }
 
-    .browser-right{
-      display:flex;align-items:center;gap:10px;
-      margin-left:6px;
+    .browser-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: 6px;
     }
 
-    .circle{
-      width:34px;height:34px;
-      border-radius:50%;
-      background:rgba(0,0,0,0.04);
-      display:flex;align-items:center;justify-content:center;
-      color:#202325;
-      font-size:18px;
+    .circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #202325;
+      font-size: 18px;
     }
 
-    .hamburger{
-      width:28px;height:28px;
-      display:flex;align-items:center;justify-content:center;
-      font-size:24px;
-      color:#1d1d1d;
+    .hamburger {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #1d1d1d;
     }
 
-    .header-bar{
-      background:linear-gradient(180deg, #0a2d4e, #0b2d4a);
-      height:72px;
-      display:flex;
-      align-items:center;
-      padding:0 18px;
-      font-size:32px;
-      font-weight:900;
-      letter-spacing:0.4px;
-      color:#ffffff;
-      text-transform:uppercase;
+    .header-strip {
+      background: linear-gradient(180deg, #0a2d4e, #0b2d4a);
+      height: 72px;
+      display: flex;
+      align-items: center;
+      padding: 0 18px;
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      color: #fff;
+      text-transform: uppercase;
     }
 
-    .header-bar .bolt{
-      font-size:28px;
-      transform:rotate(-12deg);
-      margin-right:12px;
-      line-height:1;
+    .header-strip .bolt {
+      font-size: 28px;
+      transform: rotate(-12deg);
+      margin-right: 12px;
+      line-height: 1;
     }
 
-    .sidebar{
-      background:linear-gradient(180deg, var(--sidebar), var(--sidebar-2));
-      padding:0 0 12px;
-      color:#fff;
+    .sidebar {
+      background: linear-gradient(180deg, var(--sidebar), var(--sidebar-2));
+      color: #fff;
+      padding: 0 0 12px;
+      max-height: calc(100vh - 154px);
+      overflow-y: auto;
     }
 
-    .menu{
-      display:flex;
-      flex-direction:column;
-      gap:0;
-      width:100%;
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      width: 100%;
     }
 
-    .menu-item{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      height:58px;
-      padding:0 18px 0 18px;
-      font-size:20px;
-      font-weight:800;
-      letter-spacing:0.2px;
-      text-transform:uppercase;
-      background:rgba(255,255,255,0.02);
-      border-bottom:1px solid rgba(255,255,255,0.06);
-      color:#f7f8fb;
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 58px;
+      padding: 0 18px 0 18px;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: #f7f8fb;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
 
-    .menu-item.active{
-      background:linear-gradient(90deg, #2d7fe8, #2a76d7);
-      box-shadow:inset 0 0 0 1px rgba(255,255,255,0.08);
+    .menu-item:hover { background: rgba(255,255,255,0.04); }
+
+    .menu-item.active {
+      background: linear-gradient(90deg, #2d7fe8, #2a76d7);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
     }
 
-    .menu-left{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      flex:1;
-      min-width:0;
+    .menu-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
     }
 
-    .caret{ font-size:24px; opacity:0.85; line-height:1; }
-
-    .subbox{
-      background:rgba(255,255,255,0.08);
-      border-top:1px solid rgba(255,255,255,0.06);
-      border-bottom:1px solid rgba(255,255,255,0.06);
-      padding:16px 18px 12px;
+    .caret {
+      font-size: 24px;
+      opacity: 0.85;
+      line-height: 1;
+      transition: transform 0.2s ease;
     }
 
-    .subbox .white-block{
-      background:#efefef;
-      color:#1d2430;
-      border-radius:18px;
-      padding:14px 16px;
-      font-weight:900;
-      text-transform:uppercase;
-      text-align:center;
-      font-size:22px;
-      letter-spacing:0.4px;
-      margin-bottom:18px;
+    .menu-item.expanded .caret {
+      transform: rotate(180deg);
     }
 
-    .bars{
-      display:flex;
-      flex-direction:column;
-      gap:12px;
+    .submenu {
+      display: none;
+      background: rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
     }
 
-    .bars span{
-      display:block;
-      height:18px;
-      border-radius:18px;
-      background:linear-gradient(90deg, #4fe1d1, #42cdbd);
-      width:82%;
-      box-shadow:0 8px 18px rgba(71,211,201,0.12);
+    .menu-item.expanded + .submenu {
+      display: block;
     }
 
-    .bars span:nth-child(2){ width:70%; }
-    .bars span:nth-child(3){ width:67%; }
-
-    .content{
-      background:var(--surface);
-      padding:18px 18px 12px;
+    .submenu-item {
+      padding: 12px 18px 12px 52px;
+      color: #dfeaff;
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: capitalize;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
     }
 
-    .content h1{
-      margin:12px 0 18px;
-      font-size:54px;
-      font-weight:900;
-      line-height:1;
-      letter-spacing:-1.5px;
-      color:#1e2430;
+    .submenu-item:last-child { border-bottom: none; }
+
+    .subbox {
+      background: rgba(255,255,255,0.08);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 16px 18px 12px;
     }
 
-    .stats{
-      display:flex;
-      gap:16px;
-      flex-direction:column;
+    .white-block {
+      background: #efefef;
+      color: #1d2430;
+      border-radius: 18px;
+      padding: 14px 16px;
+      font-weight: 900;
+      text-transform: uppercase;
+      text-align: center;
+      font-size: 22px;
+      letter-spacing: 0.4px;
+      margin-bottom: 18px;
     }
 
-    .card{
-      border-radius:18px;
-      min-height:120px;
-      color:#fff;
-      padding:18px 18px 12px;
-      box-shadow:var(--shadow);
-      background:linear-gradient(135deg, #3d67ee, #4a50d9);
+    .bars {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
-    .card.orange{
-      background:linear-gradient(135deg, #f6b63d, #f4a623);
-      min-height:110px;
-      color:#fff;
+    .bars span {
+      display: block;
+      height: 18px;
+      border-radius: 18px;
+      background: linear-gradient(90deg, #4fe1d1, #42cdbd);
+      width: 82%;
+      box-shadow: 0 8px 18px rgba(71,211,201,0.12);
     }
 
-    .card-title{
-      font-size:20px;
-      line-height:1.2;
-      font-weight:700;
-      letter-spacing:-0.2px;
+    .bars span:nth-child(2) { width: 70%; }
+    .bars span:nth-child(3) { width: 67%; }
+
+    .content {
+      background: var(--surface);
+      padding: 18px 18px 12px;
+      overflow-y: auto;
+      max-height: calc(100vh - 154px);
     }
 
-    .big{
-      font-size:62px;
-      line-height:1;
-      font-weight:900;
-      letter-spacing:-2px;
-      margin-top:6px;
+    .content h1 {
+      margin: 12px 0 18px;
+      font-size: 54px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -1.5px;
+      color: #1e2430;
     }
 
-    .status-box{
-      margin-top:18px;
-      background:rgba(255,255,255,0.7);
-      border-radius:18px;
-      padding:14px 0 4px;
+    .kpi-box {
+      background: rgba(255,255,255,0.84);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 12px 14px 10px;
+      margin-bottom: 14px;
     }
 
-    .status-title{
-      font-size:24px;
-      font-weight:800;
-      margin:0 0 10px;
-      padding:0 18px;
-      color:#1c2430;
+    .kpi-title {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: #1d2430;
     }
 
-    .rows{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-      padding:0 18px 8px;
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
     }
 
-    .row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      font-size:14px;
-      font-weight:700;
-      color:#1a2430;
-      padding:8px 0;
-      border-bottom:1px solid rgba(0,0,0,0.03);
+    .kpi-card {
+      background: linear-gradient(135deg, #3d67ee, #4a50d9);
+      color: #fff;
+      border-radius: 14px;
+      padding: 12px 10px;
+      min-height: 88px;
     }
 
-    .row:last-child{ border-bottom:none; }
-    .row .label{ font-size:17px; font-weight:700; }
-    .row .value{ font-size:17px; font-weight:800; color:#1a2430; }
+    .kpi-card.orange {
+      background: linear-gradient(135deg, #f5b53d, #f4a623);
+    }
 
-    @media (max-width:480px){
-      .app{ width:100%; }
-      .content h1{ font-size:42px; }
-      .menu-item{ font-size:18px; }
-      .header-bar{ font-size:28px; }
+    .kpi-label {
+      font-size: 12px;
+      opacity: 0.92;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 16px;
+      flex-direction: column;
+      margin-top: 4px;
+    }
+
+    .card {
+      border-radius: 18px;
+      min-height: 120px;
+      color: #fff;
+      padding: 18px 18px 12px;
+      box-shadow: var(--shadow);
+      background: linear-gradient(135deg, #3d67ee, #4a50d9);
+    }
+
+    .card.orange {
+      background: linear-gradient(135deg, #f6b63d, #f4a623);
+      min-height: 110px;
+      color: #fff;
+    }
+
+    .card-title {
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .big {
+      font-size: 62px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -2px;
+      margin-top: 6px;
+    }
+
+    .status-box {
+      margin-top: 18px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 18px;
+      padding: 14px 0 4px;
+    }
+
+    .status-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin: 0 0 10px;
+      padding: 0 18px;
+      color: #1c2430;
+    }
+
+    .rows {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 0 18px 8px;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1a2430;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .row:last-child { border-bottom: none; }
+    .row .label { font-size: 17px; font-weight: 700; }
+    .row .value { font-size: 17px; font-weight: 800; color: #1a2430; }
+
+    @media (max-width: 480px) {
+      .app { width: 100%; }
+      .content h1 { font-size: 42px; }
+      .menu-item { font-size: 18px; }
+      .header-strip { font-size: 28px; }
+      .kpi-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -324,7 +423,7 @@
       </div>
     </div>
 
-    <div class="header-bar">
+    <div class="header-strip">
       <span class="bolt">⚡</span>
       <span>Complaint Received</span>
     </div>
@@ -338,7 +437,7 @@
           </div>
         </div>
 
-        <div class="menu-item">
+        <div class="menu-item" onclick="toggleSubmenu(this)">
           <div class="menu-left">
             <span>2.</span>
             <span>User Management</span>
@@ -346,12 +445,25 @@
           <span class="caret">⌄</span>
         </div>
 
-        <div class="menu-item">
+        <div class="submenu">
+          <div class="submenu-item">User List</div>
+          <div class="submenu-item">Add User</div>
+          <div class="submenu-item">Roles</div>
+        </div>
+
+        <div class="menu-item expanded" onclick="toggleSubmenu(this)">
           <div class="menu-left">
             <span>3.</span>
-            <span>Email Sources</span>
+            <span>Complaint Tracker</span>
           </div>
           <span class="caret">⌄</span>
+        </div>
+
+        <div class="submenu">
+          <div class="submenu-item">Gmail Connection</div>
+          <div class="submenu-item">Complaint Received</div>
+          <div class="submenu-item">Resolve Complaint</div>
+          <div class="submenu-item">Email Processing</div>
         </div>
 
         <div class="subbox">
@@ -363,7 +475,7 @@
           </div>
         </div>
 
-        <div class="menu-item">
+        <div class="menu-item" onclick="toggleSubmenu(this)">
           <div class="menu-left">
             <span>4.</span>
             <span>Create Repository</span>
@@ -371,7 +483,13 @@
           <span class="caret">⌄</span>
         </div>
 
-        <div class="menu-item">
+        <div class="submenu">
+          <div class="submenu-item">New Repository</div>
+          <div class="submenu-item">Import</div>
+          <div class="submenu-item">Settings</div>
+        </div>
+
+        <div class="menu-item" onclick="toggleSubmenu(this)">
           <div class="menu-left">
             <span>5.</span>
             <span>Cases / Complaints</span>
@@ -379,18 +497,48 @@
           <span class="caret">⌄</span>
         </div>
 
-        <div class="menu-item">
+        <div class="submenu">
+          <div class="submenu-item">Open Cases</div>
+          <div class="submenu-item">Resolved Cases</div>
+          <div class="submenu-item">Pending</div>
+        </div>
+
+        <div class="menu-item" onclick="toggleSubmenu(this)">
           <div class="menu-left">
             <span>6.</span>
             <span>Reports</span>
           </div>
           <span class="caret">⌄</span>
         </div>
+
+        <div class="submenu">
+          <div class="submenu-item">Monthly Report</div>
+          <div class="submenu-item">Resolution Rate</div>
+          <div class="submenu-item">Export</div>
+        </div>
       </div>
     </div>
 
     <div class="content">
       <h1>Dashboard</h1>
+
+      <div class="kpi-box">
+        <div class="kpi-title">6 KPI Chart</div>
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">Total</div>
+            <div class="kpi-value">0</div>
+          </div>
+          <div class="kpi-card orange">
+            <div class="kpi-label">New</div>
+            <div class="kpi-value">0</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Resolved</div>
+            <div class="kpi-value">0</div>
+          </div>
+        </div>
+      </div>
 
       <div class="stats">
         <div class="card">
@@ -418,5 +566,11 @@
       </div>
     </div>
   </div>
+
+  <script>
+    function toggleSubmenu(el) {
+      el.classList.toggle('expanded');
+    }
+  </script>
 </body>
 </html>
